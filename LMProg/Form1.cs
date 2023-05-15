@@ -3,6 +3,7 @@ using Syncfusion.Pdf.Parsing;
 using System.Diagnostics;
 using System.Media;
 using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 
 namespace LMProg {
     public partial class Form1 : Form {
@@ -254,11 +255,11 @@ namespace LMProg {
                 if (item.SubItems.Count <= 1) { continue; }
 
                 if (item.SubItems[2].Text == emptyPageFilePathString) {
-                    PdfPage page = new();
+                    PdfPage emptyPage = new();
                     if (pdfCreatedDocument.Pages.Count > 0) {
-                        pdfCreatedDocument.Pages.Insert(pdfCreatedDocument.Pages.Count - 1, page);
+                        pdfCreatedDocument.Pages.Insert(pdfCreatedDocument.Pages.Count - 1, emptyPage);
                     } else {
-                        pdfCreatedDocument.Pages.Insert(0, page);
+                        pdfCreatedDocument.Pages.Insert(0, emptyPage);
                     }
 
                 } else {
@@ -266,8 +267,16 @@ namespace LMProg {
                         pdfCreationLoadedDocument = new(item.SubItems[2].Text);
                         previousItemPath = item.SubItems[2].Text;
                     }
-                    PdfPageBase pdfPageBase = pdfCreationLoadedDocument.Pages[int.Parse(item.SubItems[3].Text)];
-                    pdfPageBase = pdfCreatedDocument.Pages.Add();
+                    PdfLoadedPage pdfLoadedPage = pdfCreationLoadedDocument.Pages[int.Parse(item.SubItems[3].Text)] as PdfLoadedPage;
+                    if (pdfCreatedDocument.Pages.Count > 0) {
+                        pdfCreatedDocument.Pages.Insert(pdfCreatedDocument.Pages.Count - 1, pdfLoadedPage);
+                    } else {
+                        pdfCreatedDocument.Pages.Insert(0, pdfLoadedPage);
+
+                    }
+
+                    //PdfPageBase pdfPageBase = pdfCreationLoadedDocument.Pages[int.Parse(item.SubItems[3].Text)];
+                    //pdfPageBase = pdfCreatedDocument.Pages.Add();
                 }
             }
 
@@ -279,7 +288,11 @@ namespace LMProg {
             if (saveFileDialog.ShowDialog() == DialogResult.OK) {
                 pdfCreatedDocument.Save(saveFileDialog.FileName);
             }
-            pdfCreatedDocument.Close(true);
+            //pdfCreatedDocument.Close(true);
+            //pdfCreationLoadedDocument.Close(true);
+
+            SystemSounds.Beep.Play();
+            MessageBox.Show("Tiedosto tallennettu!");
         }
 
         private void ListView1_SelectedIndexChanged(object sender, EventArgs e) {
@@ -362,7 +375,7 @@ namespace LMProg {
             }
         }
 
-        private bool CheckIfFilePathExists(string[] strings) {
+        private static bool CheckIfFilePathExists(string[] strings) {
             if (strings.Length < 1) { return false; }
             if (string.IsNullOrEmpty(strings[0])) { return false; }
 

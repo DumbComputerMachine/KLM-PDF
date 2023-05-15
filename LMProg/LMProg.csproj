@@ -7,12 +7,10 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableMsixTooling>true</EnableMsixTooling>
-    <PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Syncfusion.Pdf.WinForms" Version="21.1.38" />
+    <PackageReference Include="Syncfusion.Pdf.WinForms" Version="21.2.4" />
   </ItemGroup>
 
   <ItemGroup>
